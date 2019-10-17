@@ -1,37 +1,44 @@
 /*
-*
-* Assignment 3
-* Starter Files
-*
-* CS47
-* Oct, 2018
-*/
+ *
+ * Assignment 3
+ * Starter Files
+ *
+ * CS47
+ * Oct, 2018
+ */
 
 import React from 'react';
-import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
-import { Images, Colors } from './App/Themes'
-import APIRequest from './App/Config/APIRequest'
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  Image,
+  ActivityIndicator,
+  Keyboard,
+  TouchableWithoutFeedback
+} from 'react-native';
+import { Images, Colors, Metrics } from './App/Themes';
+import APIRequest from './App/Config/APIRequest';
 
-import News from './App/Components/News'
-import Search from './App/Components/Search'
+import News from './App/Components/News';
+import Search from './App/Components/Search';
 
 export default class App extends React.Component {
-
   state = {
     loading: true,
-    articles : [],
+    isRefreshing: false,
+    articles: [],
     searchText: '',
     category: ''
-  }
+  };
 
   componentDidMount() {
-
-    //uncomment this to run an API query!
-    //this.loadArticles();
+    this.loadArticles(this.state.category);
   }
 
-  async loadArticles(searchTerm = '', category = '') {
-    this.setState({articles:[], loading: true});
+  loadArticles = async (searchTerm, category = '') => {
+    this.setState({ articles: [], loading: true });
     var resultArticles = [];
     if (category === '') {
       resultArticles = await APIRequest.requestSearchPosts(searchTerm);
@@ -39,27 +46,37 @@ export default class App extends React.Component {
       resultArticles = await APIRequest.requestCategoryPosts(category);
     }
     console.log(resultArticles);
-    this.setState({loading: false, articles: resultArticles})
-  }
+    this.setState({
+      loading: false,
+      refreshing: true,
+      articles: resultArticles
+    });
+  };
 
   render() {
-    const {articles, loading} = this.state;
+    const { articles, loading, isRefreshing } = this.state;
 
     return (
       <SafeAreaView style={styles.container}>
-
-        <Text style={{textAlign: 'center'}}>Have fun! :) {"\n"} Start by changing the API Key in "./App/Config/AppConfig.js" {"\n"} Then, take a look at the following components: {"\n"} NavigationButtons {"\n"} Search {"\n"} News {"\n"} 🔥</Text>
-
-        {/*First, you'll need a logo*/}
-
-        {/*Then your search bar*/}
-
-        {/*And some news*/}
-
-        {/*Though, you can style and organize these however you want! power to you 😎*/}
-
-        {/*If you want to return custom stuff from the NYT API, checkout the APIRequest file!*/}
-
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          {/* move header to its own component? */}
+          <View>
+            <View style={styles.headerContainer}>
+              <Image source={Images.logo} style={styles.headerImage} />
+            </View>
+            <Search reload={this.loadArticles} />
+            {loading ? (
+              <ActivityIndicator size="large" />
+            ) : (
+              // TODO: center this when list is loading
+              <News
+                articles={articles}
+                reload={this.loadArticles}
+                isRefreshing={isRefreshing}
+              />
+            )}
+          </View>
+        </TouchableWithoutFeedback>
       </SafeAreaView>
     );
   }
@@ -69,7 +86,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    margin: Metrics.overallMargin
+  },
+
+  headerContainer: {
+    width: Metrics.screenWidth - 2 * Metrics.overallMargin,
+    height: 100
+  },
+
+  headerImage: {
+    flex: 1,
+    height: undefined,
+    width: undefined,
+    resizeMode: 'contain'
   }
 });

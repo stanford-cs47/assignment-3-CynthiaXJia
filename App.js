@@ -59,21 +59,21 @@ export default class App extends React.Component {
     return (
       <SafeAreaView style={styles.container}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          {/* move header to its own component? */}
           <View>
             <View style={styles.headerContainer}>
               <Image source={Images.logo} style={styles.headerImage} />
             </View>
             <Search reload={this.loadArticles} />
             {loading ? (
-              <ActivityIndicator size="large" />
+              <ActivityIndicator size="large" style={{ flex: 1 }} />
             ) : (
-              // TODO: center this when list is loading
-              <News
-                articles={articles}
-                reload={this.loadArticles}
-                isRefreshing={isRefreshing}
-              />
+              <View style={{ flex: 1 }}>
+                <News
+                  articles={articles}
+                  reload={this.loadArticles}
+                  isRefreshing={isRefreshing}
+                />
+              </View>
             )}
           </View>
         </TouchableWithoutFeedback>

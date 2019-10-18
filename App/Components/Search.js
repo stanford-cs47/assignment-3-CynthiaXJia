@@ -9,14 +9,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'; //consider using this!
-import {
-  StyleSheet,
-  View,
-  Text,
-  Button,
-  TextInput,
-  TouchableOpacity
-} from 'react-native';
+import { StyleSheet, View, TextInput, TouchableOpacity } from 'react-native';
 import { Metrics, Colors } from '../Themes';
 import { FontAwesome } from '@expo/vector-icons';
 
@@ -41,7 +34,6 @@ const Search = props => {
       <TouchableOpacity onPress={reloadArticles}>
         <FontAwesome name="search" size={22} />
       </TouchableOpacity>
-      {/* TODO: dismiss keyboard with Keyboard.dismiss */}
     </View>
   );
 };

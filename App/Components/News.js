@@ -22,6 +22,7 @@ import { material } from 'react-native-typography';
 import { Metrics, Colors } from '../Themes';
 
 const Article = props => {
+  var moment = require('moment');
   const { title, summary, author, date, url } = props;
   return (
     <TouchableOpacity onPress={() => Linking.openURL(url)}>
@@ -32,7 +33,7 @@ const Article = props => {
         <Text style={[material.body2, { textTransform: 'capitalize' }]}>
           {author}
         </Text>
-        <Text>{date}</Text>
+        <Text>{moment(date).format('MMMM Do YYYY, h:mm:ss a')}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -55,8 +56,6 @@ const News = props => {
           />
         )}
         keyExtractor={item => item.url}
-        // onEndReachedThreshold={0.2}
-        // onEndReached={reload}
         onRefresh={() => reload()}
         refreshing={isRefreshing}
       ></FlatList>
